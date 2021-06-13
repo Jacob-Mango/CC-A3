@@ -10,6 +10,12 @@ import {
   CLEAR_ERRORS,
   USER_UPDATE_FAIL,
   USER_UPDATE_SUCCESS,
+  USER_GET_SUCCESS,
+  USER_GET_FAIL,
+  USER_GET_PETS_SUCCESS,
+  USER_GET_PETS_FAIL,
+  USER_GET_RATED_PETS_SUCCESS,
+  USER_GET_RATED_PETS_FAIL,
   CLEAR_PETS,
   PETS_LOADING,
   PETS_ADD_SUCCESS,
@@ -37,6 +43,9 @@ export default (state, action) => {
         error: action.payload,
       };
     case PETS_ADD_FAIL:
+    case USER_GET_FAIL:
+    case USER_GET_PETS_FAIL:
+    case USER_GET_RATED_PETS_FAIL:
     case PETS_REMOVE_FAIL:
     case PETS_UPDATE_FAIL:
     case PETS_GET_FAIL:
@@ -46,6 +55,21 @@ export default (state, action) => {
         ...state,
         loading: false,
         error: action.payload,
+      };
+    case USER_GET_SUCCESS:
+      return {
+        ...state,
+        viewingUser: action.payload,
+      };
+    case USER_GET_PETS_SUCCESS:
+      return {
+        ...state,
+        viewingUser: { ...state.viewingUser, pets: action.payload.pets }
+      };
+    case USER_GET_RATED_PETS_SUCCESS:
+      return {
+        ...state,
+        viewingUser: { ...state.viewingUser, rated: action.payload.pets }
       };
     case PETS_LOADING:
       return {
@@ -64,7 +88,7 @@ export default (state, action) => {
       return {
         ...state,
         loadingPets: false,
-        pets: [...state.pets, action.payload ]
+        pets: [...state.pets, action.payload]
       };
     case PETS_UPDATE_SUCCESS:
     case USER_UPDATE_SUCCESS:

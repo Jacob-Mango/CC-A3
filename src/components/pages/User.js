@@ -1,98 +1,96 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect } from "react";
 
 import AuthContext from "../../context/auth/authContext";
-import InputForm from "../layouts/InputForm";
 
-const User = (props) => {
+import Pet from "../layouts/Pet";
+
+const User = ({ history, match }) => {
   const authContext = useContext(AuthContext);
 
   const {
-    error,
-    clearErrors,
     loading,
     isAuthenticated,
     loadUser,
-    updateUserEmail,
-    updateUserBio,
+    viewingUser,
+    getUser,
+    getUserPets,
+    getUserRatedPets,
   } = authContext;
 
   useEffect(() => {
-    if (loading) {
-      if (!isAuthenticated) loadUser();
-      return;
+    if (viewingUser === undefined || viewingUser === null || viewingUser.username !== match.params.username) {
+      getUser(match.params.username);
+      getUserPets(match.params.username);
+      getUserRatedPets(match.params.username);
     }
 
-    if (error !== "" && error !== undefined && error !== null) {
-      alert(error);
-      clearErrors();
+    console.log(viewingUser);
+
+    if (loading) {
+      if (!isAuthenticated) loadUser();
+
+      return;
     }
 
     // eslint-disable-next-line
-  }, [isAuthenticated, error, props.history]);
-
-  const [details, setDetails] = useState({
-    email: "",
-    bio: ""
-  });
-
-  const {
-    email,
-    bio
-  } = details;
-
-  const onChange = (e) =>
-    setDetails({ ...details, [e.target.name]: e.target.value });
-
-  const onSubmitEmail = (e) => {
-    e.preventDefault();
-
-    if (email === "") {
-      alert("Please enter in the email!");
-      return;
-    }
-
-    updateUserEmail({ email });
-  };
-
-  const onSubmitBio = (e) => {
-    e.preventDefault();
-
-    if (bio === "") {
-      alert("Please enter in the bio!");
-      return;
-    }
-
-    updateUserBio({ bio });
-  };
+  }, [viewingUser, history]);
 
   return (
-    <div className='user'>
-      <h3>Please add/edit your details correctly</h3>
-
-      <form onSubmit={onSubmitEmail}>
-        <div>
-          <InputForm
-            style={{ display: "inline-block", width: "50%" }}
-            name='email'
-            type='email'
-            header='Email'
-            onChange={onChange}
-          />
-        </div>
-        <input className='done-btn' type='submit' value='Update' />
-      </form>
-      <form onSubmit={onSubmitBio}>
-        <div>
-          <InputForm
-            style={{ display: "inline-block", width: "50%" }}
-            name='bio'
-            type='text'
-            header='Bio'
-            onChange={onChange}
-          />
-        </div>
-        <input className='done-btn' type='submit' value='Update' />
-      </form>
+    <div className='content'>
+      {
+        viewingUser !== undefined && viewingUser !== null
+          ?
+          (
+            <Fragment>
+              <div className='content-container'>
+                <h1>User: {viewingUser.username}</h1>
+              </div>
+              <div className='content-container'>
+                <h2>Owned Pets</h2>
+              </div>
+              <div className='pets'>
+                {
+                  viewingUser.pets !== undefined && viewingUser.pets.length > 0
+                    ?
+                    viewingUser.pets.map(
+                      (pet) => (
+                        <Pet pet={pet} key={pet.id} />
+                      )
+                    )
+                    :
+                    (
+                      <span>Loading...</span>
+                    )
+                }
+              </div>
+              <div className='content-container'>
+                <h2>Rated Pets</h2>
+              </div>
+              <div className='pets'>
+                {
+                  viewingUser.rated !== undefined && viewingUser.rated.length > 0
+                    ?
+                    viewingUser.rated.map(
+                      (pet) =>
+                      (
+                        <Pet pet={pet} key={pet.id} />
+                      )
+                    )
+                    :
+                    (
+                      <span>Loading...</span>
+                    )
+                }
+              </div>
+            </Fragment>
+          )
+          :
+          (
+            <div className='content-container'>
+              <span>Loading...</span>
+            </div>
+          )
+      }
     </div>
   );
 };

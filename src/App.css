@@ -585,7 +585,7 @@ h2.transform .small {
   margin-right: auto;
 }
 
-.home-container {
+.content-container {
   width: 100%;
   max-width: 400px;
   margin-left: auto;
@@ -593,7 +593,7 @@ h2.transform .small {
   text-align: center;
 }
 
-.home-container .btn {
+.content-container .btn {
   width: 95%;
   margin: 5px;
   margin-left: auto;

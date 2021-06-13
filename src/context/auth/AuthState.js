@@ -15,6 +15,12 @@ import {
   CLEAR_ERRORS,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAIL,
+  USER_GET_SUCCESS,
+  USER_GET_FAIL,
+  USER_GET_PETS_SUCCESS,
+  USER_GET_PETS_FAIL,
+  USER_GET_RATED_PETS_SUCCESS,
+  USER_GET_RATED_PETS_FAIL,
   CLEAR_PETS,
   PETS_LOADING,
   PETS_ADD_SUCCESS,
@@ -45,14 +51,13 @@ const AuthState = (props) => {
     loadingPets: false,
     error: null,
     numPages: 0,
-    pets: []
+    pets: [],
+    viewingUser: null
   };
 
   const [state, dispatch] = useReducer(AuthReducer, initialState);
 
   const loadUser = async () => {
-    console.log("Load User");
-
     let attemptLoadUser = false;
 
     if (localStorage.token && localStorage.token !== "") {
@@ -94,6 +99,81 @@ const AuthState = (props) => {
 
       dispatch({
         type: AUTH_ERROR,
+        payload: message,
+      });
+    }
+  };
+
+  const getUser = async (username) => {
+    try {
+      const res = await axios.get("/api/user", {
+        params: {
+          username: username
+        }
+      });
+
+      dispatch({
+        type: USER_GET_SUCCESS,
+        payload: res.data,
+      });
+    } catch (err) {
+      let message = err;
+      if (err.response !== undefined) {
+        message = err.response.data;
+      }
+
+      dispatch({
+        type: USER_GET_FAIL,
+        payload: message,
+      });
+    }
+  };
+
+  const getUserPets = async (username) => {
+    try {
+      const res = await axios.get("/api/user/pets", {
+        params: {
+          username: username
+        }
+      });
+      
+      dispatch({
+        type: USER_GET_PETS_SUCCESS,
+        payload: res.data,
+      });
+    } catch (err) {
+      let message = err;
+      if (err.response !== undefined) {
+        message = err.response.data;
+      }
+
+      dispatch({
+        type: USER_GET_PETS_FAIL,
+        payload: message,
+      });
+    }
+  };
+
+  const getUserRatedPets = async (username) => {
+    try {
+      const res = await axios.get("/api/user/pets/rated", {
+        params: {
+          username: username
+        }
+      });
+      
+      dispatch({
+        type: USER_GET_RATED_PETS_SUCCESS,
+        payload: res.data,
+      });
+    } catch (err) {
+      let message = err;
+      if (err.response !== undefined) {
+        message = err.response.data;
+      }
+
+      dispatch({
+        type: USER_GET_RATED_PETS_FAIL,
         payload: message,
       });
     }
@@ -379,7 +459,7 @@ const AuthState = (props) => {
 
   const getPet = async (id) => {
     setPetsLoading(true);
-    
+
     try {
       const res = await axios.get("/api/pet", {
         params: {
@@ -440,7 +520,11 @@ const AuthState = (props) => {
         pets: state.pets,
         numPages: state.numPages,
         loadingPets: state.loadingPets,
+        viewingUser: state.viewingUser,
         loadUser,
+        getUser,
+        getUserPets,
+        getUserRatedPets,
         register,
         login,
         logout,

@@ -30,7 +30,7 @@ const Home = (props) => {
 
   return (
     <div className='content'>
-      <div className='home-container'>
+      <div className='content-container'>
         <button className='btn' onClick={refreshPets}>Show another random pet!</button>
       </div>
       <div className='pets'>
