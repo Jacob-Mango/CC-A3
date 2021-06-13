@@ -51,7 +51,7 @@ const User = (props) => {
       return;
     }
 
-    updateUserEmail({email});
+    updateUserEmail({ email });
   };
 
   const onSubmitBio = (e) => {
@@ -62,7 +62,7 @@ const User = (props) => {
       return;
     }
 
-    updateUserBio({bio});
+    updateUserBio({ bio });
   };
 
   return (
