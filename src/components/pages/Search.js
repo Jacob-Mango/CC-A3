@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Fragment } from "react";
 
 import AuthContext from "../../context/auth/authContext";
 import InputForm from "../layouts/InputForm";
@@ -60,7 +59,7 @@ const Search = (props) => {
     });
 
     // eslint-disable-next-line
-  }, [page]);
+  }, [page, props.history]);
 
   const onChange = (e) => setData({ ...data, [e.target.name]: e.target.value });
 
@@ -131,7 +130,7 @@ const Search = (props) => {
                 ?
                 <span>Loading...</span>
                 :
-                <Fragment />
+                <span>No results found...</span>
             )
         }
       </div>

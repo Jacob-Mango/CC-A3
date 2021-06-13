@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { Fragment } from "react";
 
 import AuthContext from "../../context/auth/authContext";
 
 import Pet from "../layouts/Pet";
 
-const Home = () => {
+const Home = (props) => {
   const authContext = useContext(AuthContext);
 
   const { loading, loadingPets, isAuthenticated, loadUser, pets, getRandomPet, clearPets } = authContext;
@@ -21,7 +21,7 @@ const Home = () => {
     }
 
     // eslint-disable-next-line
-  }, []);
+  }, [props.history]);
 
   const refreshPets = (e) => {
     clearPets();
@@ -33,7 +33,7 @@ const Home = () => {
       <div className='home-container'>
         <button className='btn' onClick={refreshPets}>Show another random pet!</button>
       </div>
-      <div className='pets home'>
+      <div className='pets'>
         {
           pets !== undefined && pets.length === 1
             ?

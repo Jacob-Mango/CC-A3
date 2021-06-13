@@ -12,7 +12,6 @@ const AddPet = (props) => {
     loading,
     loadUser,
     isAuthenticated,
-    user,
     addPet
   } = authContext;
 
@@ -43,21 +42,35 @@ const AddPet = (props) => {
 
   const onChange = (e) => setPet({ ...pet, [e.target.name]: e.target.value });
 
+  const onImageChange = (e) => {
+    if (e.target.files.length === 0) {
+      setPet({ ...pet, image: null });
+      return;
+    }
+    let reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onload = function () {
+      setPet({ ...pet, image: reader.result });
+    };
+    reader.onerror = function (error) {
+      console.log('Error: ', error);
+    };
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
 
-    if (image === "") {
-      alert("Please enter in the username!");
+    if (image === null) {
+      alert("Please add an image!");
       return;
     }
 
     if (name === "") {
-      alert("Please enter in the password!");
+      alert("Please enter in the name!");
       return;
     }
 
     addPet({
-      owner: user.id,
       image,
       name,
     });
@@ -70,9 +83,9 @@ const AddPet = (props) => {
       <form onSubmit={onSubmit}>
         <InputForm
           name='image'
-          type='text'
+          type='file'
           header='Image'
-          onChange={onChange}
+          onChange={onImageChange}
         />
         <InputForm
           name='name'

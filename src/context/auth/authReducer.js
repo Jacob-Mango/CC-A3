@@ -56,7 +56,7 @@ export default (state, action) => {
       console.log(action.payload);
       return {
         ...state,
-        loading: false,
+        loadingPets: false,
         pets: action.payload.pets,
         numPages: action.payload.numPages
       };

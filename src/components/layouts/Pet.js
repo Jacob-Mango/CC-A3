@@ -4,6 +4,7 @@ import AuthContext from "../../context/auth/authContext";
 import Star from './Star';
 import InputForm from "./InputForm";
 import Comment from './Comment';
+import LinkButton from './LinkButton';
 
 const Pet = ({ children, pet }) => {
   const authContext = useContext(AuthContext);
@@ -61,13 +62,15 @@ const Pet = ({ children, pet }) => {
   };
 
   return (
-    <div className={'pet ' + (commentsVisible ? (commentInputVisisble ? "pet-comments-input " : "pet-comments ") : "") }>
+    <div className={'pet ' + (commentsVisible ? (commentInputVisisble ? "pet-comments-input " : "pet-comments ") : "")}>
       <div className="pet-top-container">
         <div className='pet-header' >
           <h3>Name: {pet.name}</h3>
           <Star rating={pet.average} onClick={onUpdateRating} />
         </div>
-        <img className='pet-image' src={pet.image} alt=''></img>
+        <LinkButton to={'/pet/' + pet.id} style={{'background': 'none', 'border': 'none'}}>
+          <img className='pet-image' src={pet.image} alt=''></img>
+        </LinkButton>
         <div className='data'>
           <button className="btn" onClick={showComments}>Comments {commentsVisible ? "▲" : "▼"}</button>
         </div>

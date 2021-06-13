@@ -34,7 +34,7 @@ const Star = (props) => {
 					<div className="star-container" key={i} style={{ "maxHeight": `36px` }}>
 						<div className="star-fill" style={{ "width": `${parseInt(item * 31)}px`, "margin": "0", "padding": "0", "position": "relative", "top": `0px`, "left": `0px` }} />
 						<button className="star-hover" style={{ "width": `31px`, "margin": "0", "padding": "0", "position": "relative", "top": `-36px`, "left": `0px` }} onClick={(e) => { props.onClick(i) }} />
-						<img className="star-outline" style={{ "width": `31px`, "margin": "0", "padding": "0", "pointerEvents": "none", "position": "relative", "top": `-79px`, "left": `0px` }} src="images/star.png" alt="stars alt"></img>
+						<img className="star-outline" style={{ "width": `31px`, "margin": "0", "padding": "0", "pointerEvents": "none", "position": "relative", "top": `-79px`, "left": `0px` }} src="/images/star.png" alt="stars alt"></img>
 					</div>
 				);
 			})}

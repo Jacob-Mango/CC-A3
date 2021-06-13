@@ -388,6 +388,7 @@ h2.transform .small {
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 50px;
+  text-align: center;
 }
 
 .pets .pet {
@@ -472,6 +473,7 @@ h2.transform .small {
   margin-left: auto;
   margin-right: auto;
   margin-top: 20px;
+  cursor: pointer;
 }
 
 .pets .pet .data .btn {
@@ -596,11 +598,6 @@ h2.transform .small {
   margin: 5px;
   margin-left: auto;
   margin-right: auto;
-}
-
-.pets.home {
-  max-width: 700px;
-  text-align: center;
 }
 
 .page-container {
