@@ -7,7 +7,7 @@ import AuthContext from "../../context/auth/authContext";
 const Navbar = ({ title, icon }) => {
   const authContext = useContext(AuthContext);
 
-  const { isAuthenticated, logout, loading } = authContext;
+  const { isAuthenticated, logout, loading, user } = authContext;
 
   const onLogout = () => {
     logout();
@@ -22,7 +22,10 @@ const Navbar = ({ title, icon }) => {
         </a>
       </li>
       <li className='border'>
-        <Link to='/user'>User</Link>
+        <Link to={'/user/' + (user !== null ? user.username : '')}>User</Link>
+      </li>
+      <li className='border'>
+        <Link to='/edit_user'>Edit User</Link>
       </li>
     </Fragment>
   );

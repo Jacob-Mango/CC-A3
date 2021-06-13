@@ -8,6 +8,7 @@ import Home from "./components/pages/Home";
 import Login from "./components/pages/Login";
 import Register from "./components/pages/Register";
 import User from "./components/pages/User";
+import UpdateUser from "./components/pages/UpdateUser";
 import Search from "./components/pages/Search";
 import Pet from "./components/pages/Pet";
 import AddPet from "./components/pages/AddPet";
@@ -25,6 +26,7 @@ const App = () => {
             <Route exact path='/login' component={Login} />
             <Route exact path='/register' component={Register} />
             <Route exact path='/user/:username' component={User} />
+            <Route exact path='/edit_user' component={UpdateUser} />
             <Route exact path='/search' component={Search} />
             <Route exact path='/pet/:petId' component={Pet} />
             <Route exact path='/add_pet' component={AddPet} />

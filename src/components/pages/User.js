@@ -18,13 +18,11 @@ const User = ({ history, match }) => {
   } = authContext;
 
   useEffect(() => {
-    if (viewingUser === undefined || viewingUser === null || viewingUser.username !== match.params.username) {
+    //if (viewingUser === undefined || viewingUser === null || viewingUser.username !== match.params.username) {
       getUser(match.params.username);
       getUserPets(match.params.username);
       getUserRatedPets(match.params.username);
-    }
-
-    console.log(viewingUser);
+    //}
 
     if (loading) {
       if (!isAuthenticated) loadUser();
@@ -33,7 +31,7 @@ const User = ({ history, match }) => {
     }
 
     // eslint-disable-next-line
-  }, [viewingUser, history]);
+  }, [history]);
 
   return (
     <div className='content'>
@@ -43,7 +41,13 @@ const User = ({ history, match }) => {
           (
             <Fragment>
               <div className='content-container'>
-                <h1>User: {viewingUser.username}</h1>
+                <h1>Name: {viewingUser.username}</h1>
+              </div>
+              <div className='content-container'>
+                <h2>Biography</h2>
+                <p>
+                  {viewingUser.profile_bio}
+                </p>
               </div>
               <div className='content-container'>
                 <h2>Owned Pets</h2>
