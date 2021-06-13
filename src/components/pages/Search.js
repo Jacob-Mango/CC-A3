@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Fragment } from "react";
 
 import AuthContext from "../../context/auth/authContext";
 import InputForm from "../layouts/InputForm";
@@ -9,21 +10,48 @@ const Search = (props) => {
   const authContext = useContext(AuthContext);
 
   const {
+    error,
+    clearErrors,
+    loading,
+    loadingPets,
+    isAuthenticated,
+    loadUser,
     pets,
     numPages,
     searchPets,
     clearPets
   } = authContext;
 
+  const searchTypes = [
+    {
+      'id': 'asc',
+      'name': 'Ascending'
+    },
+    {
+      'id': 'dec',
+      'name': 'Descending'
+    }
+  ];
+
   const [data, setData] = useState({
     search: "",
-    type: "",
+    type: searchTypes[0].id,
     page: 1
   });
 
   const { search, type, page } = data;
 
   useEffect(() => {
+    if (loading) {
+      if (!isAuthenticated) loadUser();
+      return;
+    }
+
+    if (error !== "" && error !== undefined && error !== null) {
+      alert(error);
+      clearErrors();
+    }
+
     clearPets();
     searchPets({
       search,
@@ -51,11 +79,6 @@ const Search = (props) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-
-    if (search === "") {
-      alert("Please enter in a search field!");
-      return;
-    }
 
     if (type === "") {
       alert("Please select a sort!");
@@ -89,15 +112,7 @@ const Search = (props) => {
               name='type'
               type='text'
               header='Sort By'
-              options={[{
-                'id': 'asc',
-                'name': 'Ascending'
-              },
-              {
-                'id': 'dec',
-                'name': 'Descending'
-              }
-              ]}
+              options={searchTypes}
               onChange={onChange}
             />
           </div>
@@ -105,9 +120,20 @@ const Search = (props) => {
         </form>
       </div>
       <div className='pets'>
-        {pets.map((pet) => (
-          <Pet pet={pet} key={pet.id} />
-        ))}
+        {
+          pets !== undefined && pets.length > 0
+            ? pets.map((pet) => (
+              <Pet pet={pet} key={pet.id} />
+            ))
+            :
+            (
+              loadingPets
+                ?
+                <span>Loading...</span>
+                :
+                <Fragment />
+            )
+        }
       </div>
       <div className='page-container'>
         <button className="btn left" onClick={previousPage}>Previous Page</button>

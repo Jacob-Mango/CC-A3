@@ -12,6 +12,7 @@ export const USER_UPDATE_FAIL = 'USER_UPDATE_FAIL';
 
 export const CLEAR_PETS = 'CLEAR_PETS';
 
+export const PETS_LOADING = 'PETS_LOADING';
 export const PETS_ADD_SUCCESS = 'PETS_ADD_SUCCESS';
 export const PETS_ADD_FAIL = 'PETS_ADD_FAIL';
 export const PETS_REMOVE_SUCCESS = 'PETS_REMOVE_SUCCESS';
@@ -20,5 +21,5 @@ export const PETS_UPDATE_SUCCESS = 'PETS_UPDATE_SUCCESS';
 export const PETS_UPDATE_FAIL = 'PETS_UPDATE_FAIL';
 export const PETS_GET_SUCCESS = 'PETS_GET_SUCCESS';
 export const PETS_GET_FAIL = 'PETS_GET_FAIL';
-export const PET_GET_SUCCESS = 'PETS_GET_SUCCESS';
-export const PET_GET_FAIL = 'PETS_GET_FAIL';
+export const PET_GET_SUCCESS = 'PET_GET_SUCCESS';
+export const PET_GET_FAIL = 'PET_GET_FAIL';

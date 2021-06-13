@@ -16,6 +16,7 @@ import {
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAIL,
   CLEAR_PETS,
+  PETS_LOADING,
   PETS_ADD_SUCCESS,
   PETS_ADD_FAIL,
   PETS_REMOVE_SUCCESS,
@@ -41,6 +42,7 @@ const AuthState = (props) => {
     isAuthenticated: false,
     user: null,
     loading: true,
+    loadingPets: false,
     error: null,
     numPages: 0,
     pets: []
@@ -223,6 +225,13 @@ const AuthState = (props) => {
     }
   };
 
+  const setPetsLoading = async (data) => {
+    dispatch({
+      type: PETS_LOADING,
+      payload: data,
+    });
+  };
+
   const clearPets = async () => {
     dispatch({
       type: CLEAR_PETS,
@@ -291,7 +300,9 @@ const AuthState = (props) => {
     };
 
     try {
-      const res = await axios.post("/api/pet/update", formData, config);
+      const res = await axios.post("/api/user/pets/rate", formData, config);
+
+      console.log(res);
 
       dispatch({
         type: PETS_UPDATE_SUCCESS,
@@ -344,6 +355,8 @@ const AuthState = (props) => {
       },
     };
 
+    setPetsLoading(true);
+
     try {
       const res = await axios.post("/api/pet/search", formData, config);
 
@@ -365,6 +378,8 @@ const AuthState = (props) => {
   };
 
   const getPet = async (id) => {
+    setPetsLoading(true);
+    
     try {
       const res = await axios.get("/api/pet", {
         params: {
@@ -390,8 +405,12 @@ const AuthState = (props) => {
   };
 
   const getRandomPet = async () => {
+    setPetsLoading(true);
+
     try {
       const res = await axios.get("/api/pet/random");
+
+      console.log(res.data);
 
       dispatch({
         type: PET_GET_SUCCESS,
@@ -420,6 +439,7 @@ const AuthState = (props) => {
         user: state.user,
         pets: state.pets,
         numPages: state.numPages,
+        loadingPets: state.loadingPets,
         loadUser,
         register,
         login,
@@ -427,6 +447,7 @@ const AuthState = (props) => {
         clearErrors,
         updateUserEmail,
         updateUserBio,
+        setPetsLoading,
         clearPets,
         addPet,
         removePet,

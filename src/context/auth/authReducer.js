@@ -11,6 +11,7 @@ import {
   USER_UPDATE_FAIL,
   USER_UPDATE_SUCCESS,
   CLEAR_PETS,
+  PETS_LOADING,
   PETS_ADD_SUCCESS,
   PETS_ADD_FAIL,
   PETS_REMOVE_SUCCESS,
@@ -46,7 +47,13 @@ export default (state, action) => {
         loading: false,
         error: action.payload,
       };
+    case PETS_LOADING:
+      return {
+        ...state,
+        loadingPets: action.payload,
+      };
     case PETS_GET_SUCCESS:
+      console.log(action.payload);
       return {
         ...state,
         loading: false,
@@ -56,16 +63,14 @@ export default (state, action) => {
     case PET_GET_SUCCESS:
       return {
         ...state,
-        loading: false,
-        pets: state.pets.map((pet) =>
-          pet.id === action.payload.id ? action.payload : pet
-        ),
+        loadingPets: false,
+        pets: [...state.pets, action.payload ]
       };
     case PETS_UPDATE_SUCCESS:
     case USER_UPDATE_SUCCESS:
       return {
         ...state,
-        loading: false,
+        loadingPets: false,
       };
     case LOGIN_SUCCESS:
     case REGISTER_SUCCESS:
@@ -95,13 +100,13 @@ export default (state, action) => {
     case PETS_ADD_SUCCESS:
       return {
         ...state,
-        loading: false,
+        loadingPets: false,
       };
     case PETS_REMOVE_SUCCESS:
     case CLEAR_PETS:
       return {
         ...state,
-        loading: false,
+        loadingPets: false,
         pets: [],
       };
     case CLEAR_ERRORS:

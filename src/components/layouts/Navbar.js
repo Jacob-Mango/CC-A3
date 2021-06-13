@@ -40,29 +40,37 @@ const Navbar = ({ title, icon }) => {
 
   return (
     <div className='navbar'>
-      <ul>
-        <li className='border'>
-          <Link to='/'>Home</Link>
-        </li>
-        <li className='border'>
-          <Link to='/search'>Search</Link>
-        </li>
-        <li className='border'>
-          <Link to='/add_pet'>Add Pet</Link>
-        </li>
-      </ul>
-      <Link to='/'>
-        <h1>{title}</h1>
-      </Link>
-      <ul>
-        {loading ? (
-          <Fragment />
-        ) : isAuthenticated ? (
-          linksAuthenticated
-        ) : (
-          linksNotAuthenticated
-        )}
-      </ul>
+      <div className='navbar-left'>
+        <ul className='mr-auto'>
+          <li className='border'>
+            <Link to='/'>Home</Link>
+          </li>
+          <li className='border'>
+            <Link to='/search'>Search</Link>
+          </li>
+          <li className='border'>
+            <Link to='/add_pet'>Add Pet</Link>
+          </li>
+        </ul>
+      </div>
+
+      <div className='navbar-header'>
+        <Link to='/'>
+          <h1 className='mx-auto'>{title}</h1>
+        </Link>
+      </div>
+
+      <div className='navbar-right'>
+        <ul className='ml-auto'>
+          {loading ? (
+            <Fragment />
+          ) : isAuthenticated ? (
+            linksAuthenticated
+          ) : (
+            linksNotAuthenticated
+          )}
+        </ul>
+      </div>
     </div>
   );
 };

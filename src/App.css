@@ -53,6 +53,14 @@ h2.transform .small {
   font-size: 25px;
 }
 
+.ml-auto, .mx-auto {
+  margin-left: auto!important;
+}
+
+.mr-auto, .mx-auto {
+  margin-right: auto!important;
+}
+
 .btn {
   background-color: #555555;
   color: #fff;
@@ -98,26 +106,59 @@ h2.transform .small {
 }
 
 .navbar {
+  position: relative;
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
-  padding: 0.7rem 2rem;
-  z-index: 1;
-  width: 100%;
-  border-bottom: solid 1px #000000;
-  opacity: 1;
-  margin-bottom: 1rem;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  flex-flow: row nowrap;
   background-color: #3f4342;
-  z-index: 1;
 }
 
-.navbar h1 {
+.navbar .navbar-left {
+  display: flex !important;
+  flex-basis: auto;
+  width: 100% !important;
+  align-items: center;
+}
+
+.navbar .navbar-right {
+  display: flex !important;
+  flex-basis: auto;
+  width: 100% !important;
+  align-items: center;
+}
+
+.navbar .navbar-header {
+  display: inline-block;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+
+.navbar .navbar-header a {
+  width: 100%;
+}
+
+
+.navbar .navbar-header a h1 {
+  width: 100%;
   color: #9ca2a0;
   font-size: 36px;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .navbar ul {
   display: flex;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+  flex-direction: row;
 }
 
 .navbar li a {
@@ -343,16 +384,18 @@ h2.transform .small {
 
 .pets {
   max-width: 930px;
-  min-height: 300px;
   display: block;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 50px;
 }
 
 .pets .pet {
   vertical-align: top;
   width: 100%;
   max-width: 300px;
+  max-height: 325px;
+  min-height: 325px;
   display: inline-block;
   margin-left: auto;
   margin-right: auto;
@@ -361,26 +404,26 @@ h2.transform .small {
   border-radius: 20px;
 }
 
-.pets .pet .pet-left-container {
+.pets .pet .pet-top-container {
   vertical-align: top;
   width: 100%;
   height: 100%;
   max-width: 300px;
-  max-height: 300px;
-  min-height: 300px;
+  max-height: 325px;
+  min-height: 325px;
   display: inline-block;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
 }
 
-.pets .pet .pet-right-container {
+.pets .pet .pet-bottom-container {
   vertical-align: top;
   width: 100%;
   height: 100%;
-  max-width: 300px;
-  max-height: 300px;
-  min-height: 300px;
+  max-width: 325px;
+  max-height: 355px;
+  min-height: 325px;
   display: inline-block;
   margin-left: auto;
   margin-right: auto;
@@ -389,6 +432,17 @@ h2.transform .small {
 
 .pets .pet.pet-wide {
   max-width: 700px;
+  min-width: 700px;
+}
+
+.pets .pet.pet-comments {
+  max-height: 575px;
+  min-height: 575px;
+}
+
+.pets .pet.pet-comments-input {
+  max-height: 650px;
+  min-height: 650px;
 }
 
 .pets .pet h2 {
@@ -409,32 +463,20 @@ h2.transform .small {
 .pets .pet .pet-image {
   width: 200px;
   height: 200px;
+  min-width: 200px;
+  min-height: 200px;
+  max-width: 200px;
+  max-height: 200px;
   border: none;
   display: block;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 20px;
 }
 
-.pets .pet .data {
-  color: #585c5a;
-  vertical-align: top;
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-top: -10px;
-}
-
-.pets .pet .data .data-left {
-  text-align: left;
-  display: inline-block;
-  width: 50%;
-  vertical-align: top;
-}
-
-.pets .pet .data .data-right {
-  text-align: right;
-  display: inline-block;
-  width: 50%;
-  vertical-align: top;
+.pets .pet .data .btn {
+  margin-top: 10px;
+  font-size: 14px;
 }
 
 .pets .pet .link * {
@@ -475,7 +517,7 @@ h2.transform .small {
 }
 
 .comments-container {
-  width: 100%;
+  width: 275px;
   height: 100%;
   margin: 10px;
   margin-top: 0px;
@@ -483,18 +525,32 @@ h2.transform .small {
 }
 
 .comments {
-  width: 100%;
-  height: 100%;
-  margin: 10px;
+  height: 208px;
   text-align: left;
   overflow-y: scroll;
   overflow-x: hidden;
+  border: solid 1px #ccc;
+  border-radius: 5px;
+  border-bottom: none;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.comment-form {
+  display: block;
+  margin-bottom: 0 !important;
+  margin-top: auto !important;
+  position: relative;
+  top: -15px;
 }
 
 .comment-form-add {
-  margin-right: 0;
-  margin-left: auto;
+  display: inline-block;
   text-align: right;
+  margin-right: 0 !important;
+  margin-left: auto !important;
+  font-size: 14px;
+  margin-top: 10px;
 }
 
 .comment-container {

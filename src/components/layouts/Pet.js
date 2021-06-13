@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 
 import AuthContext from "../../context/auth/authContext";
 import Star from './Star';
@@ -18,7 +18,7 @@ const Pet = ({ children, pet }) => {
 
   const [data, setData] = useState({
     commentsVisible: false,
-    commentInputVisisble: false,
+    commentInputVisisble: true,
     comment: ""
   });
 
@@ -30,15 +30,12 @@ const Pet = ({ children, pet }) => {
       return;
     }
 
-    if (commentInputVisisble && !commentsVisible) {
-      setData({ ...data, commentsVisible: true });
-    }
+    setData({ ...data, commentInputVisisble: isAuthenticated });
 
     // eslint-disable-next-line
-  }, [pet, commentInputVisisble]);
+  }, [pet, commentsVisible]);
 
   const showComments = (e) => setData({ ...data, commentsVisible: !commentsVisible });
-  const showCommentInput = (e) => setData({ ...data, commentInputVisisble: !commentInputVisisble });
 
   const onChange = (e) => setData({ ...data, [e.target.name]: e.target.value });
 
@@ -58,32 +55,32 @@ const Pet = ({ children, pet }) => {
 
   const onUpdateRating = (i) => {
     updatePetRating({
-      id: pet.id,
+      pet: pet.id,
       rating: i
     });
   };
 
   return (
-    <div className={'pet ' + (commentsVisible ? "pet-wide" : "")}>
-      <div className="pet-left-container">
+    <div className={'pet ' + (commentsVisible ? (commentInputVisisble ? "pet-comments-input " : "pet-comments ") : "") }>
+      <div className="pet-top-container">
         <div className='pet-header' >
           <h3>Name: {pet.name}</h3>
-          <Star rating={pet.rating} onClick={onUpdateRating} />
+          <Star rating={pet.average} onClick={onUpdateRating} />
         </div>
         <img className='pet-image' src={pet.image} alt=''></img>
         <div className='data'>
-          <ul className='data-left'>
-            <button onClick={showComments}>Comments</button>
-          </ul>
-          <ul className='data-right'>
-            <button onClick={showCommentInput}>Leave A Comment</button>
-          </ul>
+          <button className="btn" onClick={showComments}>Comments {commentsVisible ? "▲" : "▼"}</button>
         </div>
       </div>
-      {commentsVisible === false || (
-        <div className="pet-right-container">
+      {commentsVisible ? (
+        <div className="pet-bottom-container">
           <div className='comments-container'>
-            {commentInputVisisble === false || (
+            <div className='comments'>
+              {pet.comments.map((comment) => (
+                <Comment key={comment.id} comment={comment} />
+              ))}
+            </div>
+            {commentInputVisisble ? (
               <form className='comment-form' onSubmit={onSubmit}>
                 <InputForm
                   name='comment'
@@ -91,17 +88,12 @@ const Pet = ({ children, pet }) => {
                   header='Comment'
                   onChange={onChange}
                 />
-                <input className='comment-form-add' type='submit' value='Add Comment' />
+                <input className='btn comment-form-add' type='submit' value='Add Comment' />
               </form>
-            )}
-            <div className='comments'>
-              {pet.comments.map((comment) => (
-                <Comment key={comment.id} comment={comment} />
-              ))}
-            </div>
+            ) : <Fragment />}
           </div>
         </div>
-      )}
+      ) : <Fragment />}
     </div>
   );
 };
