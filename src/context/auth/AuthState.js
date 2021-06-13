@@ -10,6 +10,7 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   USER_LOADED,
+  USER_NOT_LOADED,
   AUTH_ERROR,
   CLEAR_ERRORS,
   USER_UPDATE_SUCCESS,
@@ -23,6 +24,8 @@ import {
   PETS_UPDATE_FAIL,
   PETS_GET_SUCCESS,
   PETS_GET_FAIL,
+  PET_GET_SUCCESS,
+  PET_GET_FAIL,
 } from "../types";
 
 const setAuthToken = (token) => {
@@ -37,114 +40,32 @@ const AuthState = (props) => {
   const initialState = {
     isAuthenticated: false,
     user: null,
-    loading: false,
+    loading: true,
     error: null,
     numPages: 0,
-    pets: [
-      {
-        id: 2,
-        name: "Garfield",
-        image: "https://elasticbeanstalk-ap-southeast-2-671015575440.s3-ap-southeast-2.amazonaws.com/cc-a3/pet_images/username0.png",
-        rating: 4.2,
-        comments: [
-          {
-            id: 1,
-            user: { id: 1, username: "Test" },
-            message: "THis is a coment",
-          },
-          {
-            id: 2,
-            user: { id: 1, username: "Test" },
-            message: "THis is a chhoment",
-          },
-          {
-            id: 3,
-            user: { id: 1, username: "Test" },
-            message: "THis isda a coment",
-          }
-        ]
-      },
-      {
-        id: 2,
-        name: "Garfield",
-        image: "https://elasticbeanstalk-ap-southeast-2-671015575440.s3-ap-southeast-2.amazonaws.com/cc-a3/pet_images/username0.png",
-        rating: 4,
-        comments: [
-          {
-            id: 1,
-            user: { id: 1, username: "Test" },
-            message: "THis is a coment",
-          },
-          {
-            id: 2,
-            user: { id: 1, username: "Test" },
-            message: "THis is a chhoment",
-          },
-          {
-            id: 3,
-            user: { id: 1, username: "Test" },
-            message: "THis isda a coment",
-          }
-        ]
-      },
-      
-      {
-        id: 2,
-        name: "Garfield",
-        image: "https://elasticbeanstalk-ap-southeast-2-671015575440.s3-ap-southeast-2.amazonaws.com/cc-a3/pet_images/username0.png",
-        rating: 4,
-        comments: [
-          {
-            id: 1,
-            user: { id: 1, username: "Test" },
-            message: "THis is a coment",
-          },
-          {
-            id: 2,
-            user: { id: 1, username: "Test" },
-            message: "THis is a chhoment",
-          },
-          {
-            id: 3,
-            user: { id: 1, username: "Test" },
-            message: "THis isda a coment",
-          }
-        ]
-      }
-      ,
-      {
-        id: 2,
-        name: "Garfield",
-        image: "https://elasticbeanstalk-ap-southeast-2-671015575440.s3-ap-southeast-2.amazonaws.com/cc-a3/pet_images/username0.png",
-        rating: 4,
-        comments: [
-          {
-            id: 1,
-            user: { id: 1, username: "Test" },
-            message: "THis is a coment",
-          },
-          {
-            id: 2,
-            user: { id: 1, username: "Test" },
-            message: "THis is a chhoment",
-          },
-          {
-            id: 3,
-            user: { id: 1, username: "Test" },
-            message: "THis isda a coment",
-          }
-        ]
-      }
-    ],
+    pets: []
   };
 
   const [state, dispatch] = useReducer(AuthReducer, initialState);
 
   const loadUser = async () => {
-    if (localStorage.token) {
-      if (localStorage.token === "") return;
+    console.log("Load User");
+
+    let attemptLoadUser = false;
+
+    if (localStorage.token && localStorage.token !== "") {
       setAuthToken(localStorage.token);
-    } else return;
+      attemptLoadUser = true;
+    }
+
+    if (!attemptLoadUser) {
+      localStorage.removeItem("token");
+
+      dispatch({
+        type: USER_NOT_LOADED
+      });
+      return;
+    }
 
     const config = {
       headers: {
@@ -164,9 +85,14 @@ const AuthState = (props) => {
         payload: res.data,
       });
     } catch (err) {
+      let message = err;
+      if (err.response !== undefined) {
+        message = err.response.data;
+      }
+
       dispatch({
         type: AUTH_ERROR,
-        payload: err,
+        payload: message,
       });
     }
   };
@@ -178,19 +104,25 @@ const AuthState = (props) => {
       },
     };
 
-    formData.logintoken = "";
-
     try {
       const res = await axios.post("/api/user/register", formData, config);
+
+      localStorage.token = res.data.logintoken;
+      setAuthToken(localStorage.token);
 
       dispatch({
         type: REGISTER_SUCCESS,
         payload: res.data,
       });
     } catch (err) {
+      let message = err;
+      if (err.response !== undefined) {
+        message = err.response.data;
+      }
+
       dispatch({
         type: REGISTER_FAIL,
-        payload: err,
+        payload: message,
       });
     }
   };
@@ -206,15 +138,21 @@ const AuthState = (props) => {
       const res = await axios.post("/api/user/login", formData, config);
 
       localStorage.token = res.data.logintoken;
+      setAuthToken(localStorage.token);
 
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data,
       });
     } catch (err) {
+      let message = err;
+      if (err.response !== undefined) {
+        message = err.response.data;
+      }
+
       dispatch({
         type: LOGIN_FAIL,
-        payload: err,
+        payload: message,
       });
     }
   };
@@ -231,7 +169,7 @@ const AuthState = (props) => {
     });
   };
 
-  const updateUser = async (id) => {
+  const updateUserBio = async (formData) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -239,16 +177,48 @@ const AuthState = (props) => {
     };
 
     try {
-      const res = await axios.post("/api/user/update", id, config);
+      const res = await axios.post("/api/user/update/bio", formData, config);
 
       dispatch({
         type: USER_UPDATE_SUCCESS,
         payload: res.data,
       });
     } catch (err) {
+      let message = err;
+      if (err.response !== undefined) {
+        message = err.response.data;
+      }
+
       dispatch({
         type: USER_UPDATE_FAIL,
-        payload: err,
+        payload: message,
+      });
+    }
+  };
+
+  const updateUserEmail = async (formData) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const res = await axios.post("/api/user/update/email", formData, config);
+
+      dispatch({
+        type: USER_UPDATE_SUCCESS,
+        payload: res.data,
+      });
+    } catch (err) {
+      let message = err;
+      if (err.response !== undefined) {
+        message = err.response.data;
+      }
+
+      dispatch({
+        type: USER_UPDATE_FAIL,
+        payload: message,
       });
     }
   };
@@ -274,14 +244,19 @@ const AuthState = (props) => {
         payload: res.data,
       });
     } catch (err) {
+      let message = err;
+      if (err.response !== undefined) {
+        message = err.response.data;
+      }
+
       dispatch({
         type: PETS_ADD_FAIL,
-        payload: err,
+        payload: message,
       });
     }
   };
 
-  const removePet = async (id) => {
+  const removePet = async (formData) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -289,21 +264,26 @@ const AuthState = (props) => {
     };
 
     try {
-      const res = await axios.post("/api/pet/remove", id, config);
+      const res = await axios.post("/api/pet/remove", formData, config);
 
       dispatch({
         type: PETS_REMOVE_SUCCESS,
         payload: res.data,
       });
     } catch (err) {
+      let message = err;
+      if (err.response !== undefined) {
+        message = err.response.data;
+      }
+
       dispatch({
         type: PETS_REMOVE_FAIL,
-        payload: err,
+        payload: message,
       });
     }
   };
 
-  const updatePet = async (id) => {
+  const updatePetRating = async (formData) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -311,21 +291,26 @@ const AuthState = (props) => {
     };
 
     try {
-      const res = await axios.post("/api/pet/update", id, config);
+      const res = await axios.post("/api/pet/update", formData, config);
 
       dispatch({
         type: PETS_UPDATE_SUCCESS,
         payload: res.data,
       });
     } catch (err) {
+      let message = err;
+      if (err.response !== undefined) {
+        message = err.response.data;
+      }
+
       dispatch({
         type: PETS_UPDATE_FAIL,
-        payload: err,
+        payload: message,
       });
     }
   };
 
-  const addComment = async (id) => {
+  const addComment = async (formData) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -333,32 +318,73 @@ const AuthState = (props) => {
     };
 
     try {
-      const res = await axios.post("/api/pet/comment", id, config);
+      const res = await axios.post("/api/pet/comment", formData, config);
 
       dispatch({
         type: PETS_UPDATE_SUCCESS,
         payload: res.data,
       });
     } catch (err) {
+      let message = err;
+      if (err.response !== undefined) {
+        message = err.response.data;
+      }
+
       dispatch({
         type: PETS_UPDATE_FAIL,
-        payload: err,
+        payload: message,
       });
     }
   };
 
-  const getPets = async () => {
+  const searchPets = async (formData) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
     try {
-      const res = await axios.get("/api/pet/get");
+      const res = await axios.post("/api/pet/search", formData, config);
 
       dispatch({
         type: PETS_GET_SUCCESS,
         payload: res.data,
       });
     } catch (err) {
+      let message = err;
+      if (err.response !== undefined) {
+        message = err.response.data;
+      }
+
       dispatch({
         type: PETS_GET_FAIL,
-        payload: err,
+        payload: message,
+      });
+    }
+  };
+
+  const getPet = async (id) => {
+    try {
+      const res = await axios.get("/api/pet", {
+        params: {
+          pet: id
+        }
+      });
+
+      dispatch({
+        type: PET_GET_SUCCESS,
+        payload: res.data,
+      });
+    } catch (err) {
+      let message = err;
+      if (err.response !== undefined) {
+        message = err.response.data;
+      }
+
+      dispatch({
+        type: PET_GET_FAIL,
+        payload: message,
       });
     }
   };
@@ -368,13 +394,18 @@ const AuthState = (props) => {
       const res = await axios.get("/api/pet/random");
 
       dispatch({
-        type: PETS_GET_SUCCESS,
+        type: PET_GET_SUCCESS,
         payload: res.data,
       });
     } catch (err) {
+      let message = err;
+      if (err.response !== undefined) {
+        message = err.response.data;
+      }
+
       dispatch({
-        type: PETS_GET_FAIL,
-        payload: err,
+        type: PET_GET_FAIL,
+        payload: message,
       });
     }
   };
@@ -394,12 +425,14 @@ const AuthState = (props) => {
         login,
         logout,
         clearErrors,
-        updateUser,
+        updateUserEmail,
+        updateUserBio,
         clearPets,
         addPet,
         removePet,
-        updatePet,
-        getPets,
+        updatePetRating,
+        searchPets,
+        getPet,
         getRandomPet,
         addComment
       }}

@@ -13,7 +13,7 @@ const Pet = ({ children, pet }) => {
     loadUser,
     isAuthenticated,
     addComment,
-    updatePet,
+    updatePetRating,
   } = authContext;
 
   const [data, setData] = useState({
@@ -57,7 +57,7 @@ const Pet = ({ children, pet }) => {
   };
 
   const onUpdateRating = (i) => {
-    updatePet({
+    updatePetRating({
       id: pet.id,
       rating: i
     });

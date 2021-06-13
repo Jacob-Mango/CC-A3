@@ -20,14 +20,14 @@ const Home = () => {
     if (loading) {
       if (!isAuthenticated) loadUser();
 
-      return;
-    }
+      if (pets.length > 0) {
+        setData({ ...data, pet: pets[0] });
+      } else {
+        clearPets();
+        getRandomPet();
+      }
 
-    if (pets !== undefined && pets.length > 0) {
-      setData({ ...data, pet: pets[0] });
-    } else {
-      clearPets();
-      getRandomPet();
+      return;
     }
 
     // eslint-disable-next-line

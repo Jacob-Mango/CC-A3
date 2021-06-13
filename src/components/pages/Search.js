@@ -11,7 +11,7 @@ const Search = (props) => {
   const {
     pets,
     numPages,
-    getPets,
+    searchPets,
     clearPets
   } = authContext;
 
@@ -25,10 +25,10 @@ const Search = (props) => {
 
   useEffect(() => {
     clearPets();
-    getPets({
+    searchPets({
       search,
       type,
-      page
+      page,
     });
 
     // eslint-disable-next-line
@@ -65,10 +65,10 @@ const Search = (props) => {
     setData({ ...data, page: 0 });
 
     clearPets();
-    getPets({
+    searchPets({
       search,
       type,
-      page
+      page,
     });
   };
 

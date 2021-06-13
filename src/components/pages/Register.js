@@ -38,14 +38,12 @@ const Register = (props) => {
   const [user, setUser] = useState({
     username: "",
     password: "",
-    twitter: "",
     email: "",
   });
 
   const {
     username,
     password,
-    twitter,
     email,
   } = user;
 
@@ -70,7 +68,6 @@ const Register = (props) => {
     register({
       username,
       password,
-      twitter,
       email,
     });
   };
@@ -95,15 +92,6 @@ const Register = (props) => {
             name='password'
             type='password'
             header='Password'
-            onChange={onChange}
-          />
-        </div>
-        <div>
-          <InputForm
-            style={{ display: "inline-block", width: "50%" }}
-            name='twitter'
-            type='text'
-            header='Twitter'
             onChange={onChange}
           />
         </div>

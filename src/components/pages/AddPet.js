@@ -80,9 +80,7 @@ const AddPet = (props) => {
           header='Name'
           onChange={onChange}
         />
-        <div className='bottom-buttons'>
-          <input className='right' type='submit' value='AddPet' />
-        </div>
+        <input className='btn' type='submit' value='AddPet' />
       </form>
     </div>
   );

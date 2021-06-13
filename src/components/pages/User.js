@@ -12,7 +12,8 @@ const User = (props) => {
     loading,
     isAuthenticated,
     loadUser,
-    updateUser,
+    updateUserEmail,
+    updateUserBio,
   } = authContext;
 
   useEffect(() => {
@@ -30,13 +31,11 @@ const User = (props) => {
   }, [isAuthenticated, error, props.history]);
 
   const [details, setDetails] = useState({
-    twitter: "",
     email: "",
     bio: ""
   });
 
   const {
-    twitter,
     email,
     bio
   } = details;
@@ -44,7 +43,7 @@ const User = (props) => {
   const onChange = (e) =>
     setDetails({ ...details, [e.target.name]: e.target.value });
 
-  const onSubmit = (e) => {
+  const onSubmitEmail = (e) => {
     e.preventDefault();
 
     if (email === "") {
@@ -52,32 +51,25 @@ const User = (props) => {
       return;
     }
 
+    updateUserEmail({email});
+  };
+
+  const onSubmitBio = (e) => {
+    e.preventDefault();
+
     if (bio === "") {
       alert("Please enter in the bio!");
       return;
     }
 
-    updateUser(
-      twitter,
-      email,
-      bio
-    );
+    updateUserBio({bio});
   };
 
   return (
     <div className='user'>
       <h3>Please add/edit your details correctly</h3>
 
-      <form onSubmit={onSubmit}>
-        <div>
-          <InputForm
-            style={{ display: "inline-block", width: "50%" }}
-            name='twitter'
-            type='text'
-            header='Twitter'
-            onChange={onChange}
-          />
-        </div>
+      <form onSubmit={onSubmitEmail}>
         <div>
           <InputForm
             style={{ display: "inline-block", width: "50%" }}
@@ -87,6 +79,9 @@ const User = (props) => {
             onChange={onChange}
           />
         </div>
+        <input className='done-btn' type='submit' value='Update' />
+      </form>
+      <form onSubmit={onSubmitBio}>
         <div>
           <InputForm
             style={{ display: "inline-block", width: "50%" }}
@@ -96,7 +91,7 @@ const User = (props) => {
             onChange={onChange}
           />
         </div>
-        <input className='done-btn' type='submit' value='Done' />
+        <input className='done-btn' type='submit' value='Update' />
       </form>
     </div>
   );

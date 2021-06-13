@@ -2,6 +2,7 @@ import {
   REGISTER_SUCCESS,
   REGISTER_FAIL,
   USER_LOADED,
+  USER_NOT_LOADED,
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
@@ -18,6 +19,8 @@ import {
   PETS_UPDATE_FAIL,
   PETS_GET_SUCCESS,
   PETS_GET_FAIL,
+  PET_GET_SUCCESS,
+  PET_GET_FAIL,
 } from "../types";
 
 export default (state, action) => {
@@ -36,15 +39,29 @@ export default (state, action) => {
     case PETS_REMOVE_FAIL:
     case PETS_UPDATE_FAIL:
     case PETS_GET_FAIL:
+    case PET_GET_FAIL:
     case USER_UPDATE_FAIL:
       return {
         ...state,
         loading: false,
         error: action.payload,
       };
-    case PETS_ADD_SUCCESS:
-    case PETS_UPDATE_SUCCESS:
     case PETS_GET_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        pets: action.payload.pets,
+        numPages: action.payload.numPages
+      };
+    case PET_GET_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        pets: state.pets.map((pet) =>
+          pet.id === action.payload.id ? action.payload : pet
+        ),
+      };
+    case PETS_UPDATE_SUCCESS:
     case USER_UPDATE_SUCCESS:
       return {
         ...state,
@@ -60,6 +77,13 @@ export default (state, action) => {
         user: action.payload,
         error: null,
       };
+    case USER_NOT_LOADED:
+      return {
+        ...state,
+        isAuthenticated: false,
+        loading: false,
+        error: null,
+      };
     case LOGOUT:
       return {
         ...state,
@@ -68,15 +92,22 @@ export default (state, action) => {
         user: null,
         error: null,
       };
+    case PETS_ADD_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+      };
     case PETS_REMOVE_SUCCESS:
     case CLEAR_PETS:
       return {
         ...state,
+        loading: false,
         pets: [],
       };
     case CLEAR_ERRORS:
       return {
         ...state,
+        loading: false,
         error: null,
       };
     default:
