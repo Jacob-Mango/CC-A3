@@ -10,7 +10,5 @@ COPY . /usr/src/app
 RUN npm run build
 
 ### STAGE 2: Production Environment ###
-FROM nginx:1.13.12-alpine
-COPY --from=builder /usr/src/app/build /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 8080
+CMD [ "node", "server.js" ]
