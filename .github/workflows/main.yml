@@ -13,7 +13,7 @@ env:
   ECR_REPOSITORY: cc-a3-frontend
   ECS_SERVICE: cc-a3-frontend
   ECS_CLUSTER: cc-a3
-  ECS_TASK_DEFINITION: .aws/task-definition.json
+  ECS_TASK_DEFINITION: task-definition.json
   CONTAINER_NAME: cc-a3-frontend
                                                
 defaults:
@@ -56,6 +56,10 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
+      - name: Download task definition
+        run: |
+          aws ecs describe-task-definition --task-definition my-task-definition-family --query taskDefinition > task-definition.json
+
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
@@ -71,3 +75,4 @@ jobs:
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
+          force-new-deployment: true
